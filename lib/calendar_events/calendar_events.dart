@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class CalendarEvents {
@@ -8,7 +9,7 @@ class CalendarEvents {
     try {
       await platform.invokeMethod('addEvents', {'events': events});
     } on PlatformException catch (e) {
-      print("Failed to add events: '${e.message}'.");
+      debugPrint("Failed to add events: '${e.message}'.");
     }
   }
 }

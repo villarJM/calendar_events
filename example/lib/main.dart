@@ -11,32 +11,59 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<Map<String, dynamic>> events = [
+      {
+        'title': 'Meeting',
+        'description': 'Description',
+        'startDate': (DateTime.parse('2024-10-05 10:00:00')).millisecondsSinceEpoch.toString(),
+        'endDate': (DateTime.parse('2024-10-05 11:00:00')).millisecondsSinceEpoch.toString(),
+        'reminder': '10'
+      },
+      {
+        'title': 'Lunch',
+        'description': 'Description',
+        'startDate': (DateTime.parse('2024-10-05 12:00:00')).millisecondsSinceEpoch.toString(),
+        'endDate': (DateTime.parse('2024-10-05 13:00:00')).millisecondsSinceEpoch.toString(),
+        'reminder': '10'
+      }
+    ];
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(title: const Text('Calendar Events')),
         body: Center(
-          child: ElevatedButton(
-            onPressed: () async {
-              CalendarEvents calendarEvents = CalendarEvents();
-              await calendarEvents.addEvents([
-                {
-                  'title': 'Meeting',
-                  'description': 'Description',
-                  'startDate': (DateTime.parse('2024-09-21 10:00:00')).millisecondsSinceEpoch.toString(),
-                  'endDate': (DateTime.parse('2024-09-21 11:00:00')).millisecondsSinceEpoch.toString(),
-                  'reminder': '10'
-                },
-                {
-                  'title': 'Lunch',
-                  'description': 'Description',
-                  'startDate': (DateTime.parse('2024-09-21 12:00:00')).millisecondsSinceEpoch.toString(),
-                  'endDate': (DateTime.parse('2024-09-21 13:00:00')).millisecondsSinceEpoch.toString(),
-                  'reminder': '10'
-                }
-              ]);
-            },
-            child: const Text('Add Events'),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              children: events.map((item) => Row(
+                children: [
+                  Expanded(
+                    child: Card(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("Title: ${item['title']}"),
+                            Text("Description: ${item['description']}"),
+                            Text("Start Date: ${item['startDate']}"),
+                            Text("End Date: ${item['endDate']}"),
+                            Text("Reminder: ${item['reminder']} minute"),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              )).toList()
+            ),
           ),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () async {
+            CalendarEvents calendarEvents = CalendarEvents();
+            await calendarEvents.addEvents(events);
+          },
+          child: const Icon(Icons.event_available_rounded, size: 40,),
         ),
       ),
     );
