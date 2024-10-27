@@ -11,6 +11,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    CalendarEvents calendarEvents = CalendarEvents();
     List<Map<String, dynamic>> events = [
       {
         'title': 'Meeting',
@@ -60,7 +61,7 @@ class MyApp extends StatelessWidget {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
-            CalendarEvents calendarEvents = CalendarEvents();
+            await calendarEvents.fetchCalendars();
             await calendarEvents.addEvents(events);
           },
           child: const Icon(Icons.event_available_rounded, size: 40,),

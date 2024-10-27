@@ -12,4 +12,18 @@ class CalendarEvents {
       debugPrint("Failed to add events: '${e.message}'.");
     }
   }
+
+  Future<void> fetchCalendars() async {
+
+    try {
+      final List<dynamic> calendars = await platform.invokeMethod('listCalendar');
+      
+      for (var calendar in calendars) {
+        print('ID: ${calendar["id"]}, Display Name: ${calendar["displayName"]}, Account Name: ${calendar["accountName"]}, Is Primary: ${calendar["isPrimary"]}');
+      }
+    } on PlatformException catch (e) {
+      print("Error al obtener calendarios: '${e.message}'.");
+    }
+}
+
 }
