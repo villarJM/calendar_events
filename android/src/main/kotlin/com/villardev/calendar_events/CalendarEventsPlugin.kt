@@ -112,10 +112,13 @@ class CalendarEventsPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 
     private fun insertEvents(events: List<Map<String, String>>?, result: Result) {
         val contentResolver: ContentResolver = activity!!.contentResolver
-
         val calendarID = getCalendarID(contentResolver);
+
         Log.d("CalendarEventsPlugin", "insert $calendarID")
         for (event in events ?: emptyList()) {
+
+            existingEvents(event["organizer_id"]!!, event["startDate"]!!, event["endDate"]!!, contentResolver );
+
             val values = ContentValues().apply {
                 put(CalendarContract.Events.TITLE, event["title"])
                 put(CalendarContract.Events.DESCRIPTION, event["description"])
@@ -151,9 +154,9 @@ class CalendarEventsPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
         val cursor = contentResolver.query(
             CalendarContract.Calendars.CONTENT_URI,
             projection,
+            CalendarContract.Calendars.VISIBLE + " = 1",
             null,
-            null,
-            null
+            CalendarContract.Calendars._ID + " ASC"
         )
 
         cursor?.use {
@@ -162,8 +165,34 @@ class CalendarEventsPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
             }
         }
 
-        // Si no se encontró ningún calendario o el cursor es nulo, devuelve null
         return null
+    }
+
+    private fun existingEvents(organizerId: String, eventStart: String, eventEnd: String, contentResolver: ContentResolver) {
+
+        val projection = arrayOf(CalendarContract.Events._ID)
+        val selection = "${CalendarContract.Events.CUSTOM_APP_PACKAGE} = ? AND ${CalendarContract.Events.DTSTART} >= ? AND ${CalendarContract.Events.DTEND} <= ?"
+        val selectionArgs = arrayOf(
+            organizerId,
+            eventStart,
+            eventEnd
+        )
+        
+        val cursor = contentResolver.query(
+            CalendarContract.Events.CONTENT_URI,
+            projection,
+            selection,
+            selectionArgs,
+            null
+        )
+        
+        cursor?.use { it ->
+            while (it.moveToNext()) {
+                val eventId = it.getLong(it.getColumnIndex(CalendarContract.Events._ID))
+                val deleteUri: Uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventId)
+                contentResolver.delete(deleteUri, null, null)
+            }
+        }
     }
 
     private fun listCalendars(result: Result ) {

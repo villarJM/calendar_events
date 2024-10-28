@@ -1,3 +1,4 @@
+import 'package:calendar_events/event.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
@@ -10,8 +11,8 @@ class MethodChannelCalendarEvents extends CalendarEventsPlatform {
   final methodChannel = const MethodChannel('calendar_events');
 
   @override
-  Future<String?> getPlatformVersion() async {
-    final version = await methodChannel.invokeMethod<String>('getPlatformVersion');
-    return version;
+  Future<void> addEvents({ required List<Event> events}) async {
+    List<Map<String, dynamic>> eventsListMap = events.map((event) => event.toJson()).toList();
+    await methodChannel.invokeMethod('addEvents', {'events': eventsListMap});
   }
 }

@@ -1,5 +1,4 @@
-
-import 'package:calendar_events/calendar_events/calendar_events.dart';
+import 'package:calendar_events/events.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -12,21 +11,23 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     CalendarEvents calendarEvents = CalendarEvents();
-    List<Map<String, dynamic>> events = [
-      {
-        'title': 'Meeting',
-        'description': 'Description',
-        'startDate': (DateTime.parse('2024-10-05 10:00:00')).millisecondsSinceEpoch.toString(),
-        'endDate': (DateTime.parse('2024-10-05 11:00:00')).millisecondsSinceEpoch.toString(),
-        'reminder': '10'
-      },
-      {
-        'title': 'Lunch',
-        'description': 'Description',
-        'startDate': (DateTime.parse('2024-10-05 12:00:00')).millisecondsSinceEpoch.toString(),
-        'endDate': (DateTime.parse('2024-10-05 13:00:00')).millisecondsSinceEpoch.toString(),
-        'reminder': '10'
-      }
+    List<Event> events = [
+      Event(
+        title: 'Meeting',
+        description: 'Description',
+        startDate: (DateTime.parse('2024-10-05 10:00:00')).millisecondsSinceEpoch.toString(),
+        endDate: (DateTime.parse('2024-10-05 11:00:00')).millisecondsSinceEpoch.toString(),
+        reminder: '10',
+        organizerId: "CalendarEvents"
+      ),
+      Event(
+        title: 'Lauch',
+        description: 'Description',
+        startDate: (DateTime.parse('2024-10-05 12:00:00')).millisecondsSinceEpoch.toString(),
+        endDate: (DateTime.parse('2024-10-05 13:00:00')).millisecondsSinceEpoch.toString(),
+        reminder: '10',
+        organizerId: "CalendarEvents"
+      ),
     ];
     return MaterialApp(
       home: Scaffold(
@@ -44,11 +45,11 @@ class MyApp extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("Title: ${item['title']}"),
-                            Text("Description: ${item['description']}"),
-                            Text("Start Date: ${item['startDate']}"),
-                            Text("End Date: ${item['endDate']}"),
-                            Text("Reminder: ${item['reminder']} minute"),
+                            Text("Title: ${item.title}"),
+                            Text("Description: ${item.description}"),
+                            Text("Start Date: ${item.startDate}"),
+                            Text("End Date: ${item.endDate}"),
+                            Text("Reminder: ${item.reminder} minute"),
                           ],
                         ),
                       ),
@@ -61,8 +62,7 @@ class MyApp extends StatelessWidget {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
-            await calendarEvents.fetchCalendars();
-            await calendarEvents.addEvents(events);
+            await calendarEvents.addEvents(events: events);
           },
           child: const Icon(Icons.event_available_rounded, size: 40,),
         ),
